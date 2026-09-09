@@ -1,0 +1,7 @@
+/*
+ * Puente React: Inspinia espera #wrapper / .middle-box como hijos de body.
+ * display:contents elimina la caja de #root sin tocar una sola regla del theme.
+ */
+#root {
+  display: contents;
+}
