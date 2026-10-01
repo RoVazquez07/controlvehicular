@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@(ViewData["Title"] ?? "Control Vehicular")</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/css/plugins/iCheck/custom.css" />
+    <link rel="stylesheet" href="~/css/animate.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/app.css" />
+</head>
+<body>
+    <div id="wrapper">
+        <partial name="_Navigation" />
+        <div id="page-wrapper" class="gray-bg">
+            <partial name="_TopNavbar" />
+            @RenderBody()
+            <partial name="_Footer" />
+        </div>
+    </div>
+    <form id="logout-form" action="/logout" method="post" hidden>
+        @Html.AntiForgeryToken()
+    </form>
+    <script src="~/js/site.js"></script>
+</body>
+</html>

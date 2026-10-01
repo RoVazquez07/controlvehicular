@@ -1,13 +1,20 @@
 import type { FormEvent } from 'react'
-import { Link } from 'react-router-dom'
-import { signOut } from '../auth'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../store/auth-context'
 import { useLayout } from '../store/layout-context'
 
 export function Navbar() {
+  const navigate = useNavigate()
+  const { logout } = useAuth()
   const { toggleMiniNavbar } = useLayout()
 
   const onSearch = (event: FormEvent) => {
     event.preventDefault()
+  }
+
+  const onLogout = async () => {
+    await logout()
+    navigate('/', { replace: true })
   }
 
   return (
@@ -18,16 +25,13 @@ export function Navbar() {
         style={{ marginBottom: 0 }}
       >
         <div className="navbar-header">
-          <a
+          <button
+            type="button"
             className="navbar-minimalize minimalize-styl-2 btn btn-primary"
-            href="#"
-            onClick={(event) => {
-              event.preventDefault()
-              toggleMiniNavbar()
-            }}
+            onClick={toggleMiniNavbar}
           >
             <i className="fa fa-bars"></i>
-          </a>
+          </button>
           <form
             role="search"
             className="navbar-form-custom"
@@ -46,9 +50,9 @@ export function Navbar() {
         </div>
         <ul className="nav navbar-top-links navbar-right">
           <li>
-            <Link to="/" onClick={signOut}>
+            <button type="button" className="btn btn-link" onClick={onLogout}>
               <i className="fa fa-sign-out"></i> Log out
-            </Link>
+            </button>
           </li>
         </ul>
       </nav>

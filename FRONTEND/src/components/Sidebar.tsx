@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { signOut } from '../auth'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../store/auth-context'
 
 const menu = [
   { label: 'Main view', icon: 'fa fa-th-large', to: '/app' },
@@ -9,6 +9,8 @@ const menu = [
 
 export function Sidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
 
@@ -22,6 +24,12 @@ export function Sidebar() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
+  const onLogout = async () => {
+    setProfileOpen(false)
+    await logout()
+    navigate('/', { replace: true })
+  }
+
   return (
     <nav className="navbar-default navbar-static-side" role="navigation">
       <div className="sidebar-collapse">
@@ -31,26 +39,29 @@ export function Sidebar() {
               ref={profileRef}
               className={`dropdown profile-element${profileOpen ? ' show' : ''}`}
             >
-              <a
-                className="dropdown-toggle"
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault()
-                  setProfileOpen((open) => !open)
-                }}
+              <button
+                type="button"
+                className="dropdown-toggle btn btn-link"
+                onClick={() => setProfileOpen((open) => !open)}
               >
-                <span className="block m-t-xs font-bold">Example user</span>
+                <span className="block m-t-xs font-bold">
+                  {user?.name ?? user?.email ?? 'Usuario'}
+                </span>
                 <span className="text-muted text-xs block">
                   menu <b className="caret"></b>
                 </span>
-              </a>
+              </button>
               <ul
                 className={`dropdown-menu animated fadeInRight m-t-xs${profileOpen ? ' show' : ''}`}
               >
                 <li>
-                  <Link className="dropdown-item" to="/" onClick={signOut}>
+                  <button
+                    type="button"
+                    className="dropdown-item btn btn-link"
+                    onClick={onLogout}
+                  >
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>

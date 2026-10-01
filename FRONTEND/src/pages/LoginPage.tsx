@@ -1,18 +1,28 @@
-import { useEffect, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { signIn } from '../auth'
+import { getErrorMessage, useAuth } from '../store/auth-context'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { login, isAuthenticating } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     document.title = 'INSPINIA | Login'
   }, [])
 
-  const onSubmit = (event: FormEvent) => {
+  const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    signIn()
-    navigate('/app')
+    setError(null)
+
+    try {
+      await login({ email: email.trim(), password })
+      navigate('/app')
+    } catch (err) {
+      setError(getErrorMessage(err))
+    }
   }
 
   return (
@@ -33,7 +43,12 @@ export function LoginPage() {
               type="email"
               className="form-control"
               placeholder="Username"
+              name="email"
+              autoComplete="username"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
+              disabled={isAuthenticating}
             />
           </div>
           <div className="form-group">
@@ -41,11 +56,25 @@ export function LoginPage() {
               type="password"
               className="form-control"
               placeholder="Password"
+              name="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               required
+              disabled={isAuthenticating}
             />
           </div>
-          <button type="submit" className="btn btn-primary block full-width m-b">
-            Login
+          {error ? (
+            <p className="text-danger" role="alert">
+              {error}
+            </p>
+          ) : null}
+          <button
+            type="submit"
+            className="btn btn-primary block full-width m-b"
+            disabled={isAuthenticating}
+          >
+            {isAuthenticating ? 'Ingresando…' : 'Login'}
           </button>
 
           <Link to="/forgot-password">
