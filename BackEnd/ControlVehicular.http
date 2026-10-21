@@ -1,0 +1,58 @@
+@ControlVehicular_HostAddress = https://localhost:7039
+@token =
+
+GET {{ControlVehicular_HostAddress}}/health
+
+###
+
+POST {{ControlVehicular_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "admin",
+  "password": "reemplazar-con-secreto-local"
+}
+
+###
+
+GET {{ControlVehicular_HostAddress}}/hola
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{ControlVehicular_HostAddress}}/vehiculos?pagina=1&tamanoPagina=20&ordenarPor=placa&direccion=asc
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+POST {{ControlVehicular_HostAddress}}/vehiculos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "placa": "ABC-123",
+  "marca": "Toyota",
+  "modelo": "Corolla",
+  "anio": 2020,
+  "estado": "Activo"
+}
+
+###
+
+GET {{ControlVehicular_HostAddress}}/vehiculos/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+PUT {{ControlVehicular_HostAddress}}/vehiculos/1/estado
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "estado": "Mantenimiento"
+}
+
+###
